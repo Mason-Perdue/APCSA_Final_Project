@@ -1,4 +1,4 @@
-# APCSA_Final_Project
+# APCSA Final Project
 
 GBHS AP Computer Science A Final Project in Java
 

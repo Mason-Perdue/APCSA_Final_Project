@@ -107,7 +107,7 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
         // sets board size to 512 pixels square
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         // sets background to black color
-        setBackground(Color.gray);
+        setBackground(Color.black);
         // sets window to be what is locking the keyboard
         setFocusable(true);
         // listens for key inputs and then calls method
@@ -117,11 +117,11 @@ public class SpaceInvaders extends JPanel implements ActionListener, KeyListener
         // getClass() gets file location of this class file
         // getResource() gets file based on directory of the class (./)
         // getImage() makes the file an Image
-        shipImg = new ImageIcon(getClass().getResource("./ship.png")).getImage();
-        alienImg = new ImageIcon(getClass().getResource("./alien.png")).getImage();
-        alienCyanImg = new ImageIcon(getClass().getResource("./alien-cyan.png")).getImage();
-        alienMagentaImg = new ImageIcon(getClass().getResource("./alien-magenta.png")).getImage();
-        alienYellowImg = new ImageIcon(getClass().getResource("./alien-yellow.png")).getImage();
+        shipImg = new ImageIcon(getClass().getResource("./rsc/ship.png")).getImage();
+        alienImg = new ImageIcon(getClass().getResource("./rsc/alien.png")).getImage();
+        alienCyanImg = new ImageIcon(getClass().getResource("./rsc/alien-cyan.png")).getImage();
+        alienMagentaImg = new ImageIcon(getClass().getResource("./rsc/alien-magenta.png")).getImage();
+        alienYellowImg = new ImageIcon(getClass().getResource("./rsc/alien-yellow.png")).getImage();
         
         // instanciates alien ArrayList
         alienImgArray = new ArrayList<Image>();

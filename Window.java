@@ -38,17 +38,17 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     public MyGame(){
         // window setup
         setPreferredSize(new Dimension(width, height));
-        setBackground(Color.gray);
+        setBackground(Color.black);
         setFocusable(true);
         addKeyListener(this);
 
         // import images
-        playerImg = new ImageIcon(getClass().getResource("./ship.png")).getImage();
+        playerImg = new ImageIcon(getClass().getResource("./rsc/ship.png")).getImage();
         enemyImgArr = new ArrayList<Image>();
-        enemyImgArr.add(new ImageIcon(getClass().getResource("./alien.png")).getImage());
-        enemyImgArr.add(new ImageIcon(getClass().getResource("./alien-cyan.png")).getImage());
-        enemyImgArr.add(new ImageIcon(getClass().getResource("./alien-magenta.png")).getImage());
-        enemyImgArr.add(new ImageIcon(getClass().getResource("./alien-yellow.png")).getImage());
+        enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien.png")).getImage());
+        enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-cyan.png")).getImage());
+        enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-magenta.png")).getImage());
+        enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-yellow.png")).getImage());
         
         // create Player object
         player = new Player(((px * cols) / 2 - px), (height - (px * 2)), (px * 2), px, playerImg);
