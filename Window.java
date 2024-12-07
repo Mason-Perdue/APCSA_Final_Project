@@ -54,8 +54,9 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         player = new Player(((px * cols) / 2 - px), (height - (px * 2)), (px * 2), px, playerImg);
         
         // create Enemy objects
+        enemyArr = new ArrayList<Enemy>();
         for(Image enemyImg : enemyImgArr){
-            enemyArr.add(new Enemy(px, px, (px * 2), px, );
+            enemyArr.add(new Enemy(px, px, (px * 2), px, enemyImg));
         }
 
         // start game timer
