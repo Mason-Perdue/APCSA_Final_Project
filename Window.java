@@ -7,7 +7,6 @@ import javax.swing.*;
 // makes window and instance of MyGame
 public class Window{
     public static void main(String[] args) {
-        // 2 player
         JFrame frame = new JFrame("Game");
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
@@ -23,7 +22,7 @@ public class Window{
 
 class MyGame extends JPanel implements ActionListener, KeyListener{
     // vars
-	private int px = 20;
+    private int px = 20;
     private int cols = 25;
     private int rows = 25;
     private int width = px * cols;
