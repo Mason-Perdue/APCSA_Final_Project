@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Random;
+import java.lang.Math;
 import javax.swing.*;
 
 // makes window and instance of MyGame
 public class Window{
     public static void main(String[] args) {
+        System.out.println(Aspect.abc);
+
         JFrame frame = new JFrame("Game");
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
@@ -22,16 +24,66 @@ public class Window{
 
 class MyGame extends JPanel implements ActionListener, KeyListener{
     // vars
-    private int px = 20;
-    private int cols = 25;
-    private int rows = 25;
-    private int width = px * cols;
-    private int height = px * rows;
+    private static int px = 20;
+    private static int cols = 25;
+    private static int rows = 25;
+    private static int width = px * cols;
+    private static int height = px * rows;
     private Image playerImg;
     private ArrayList<Image> enemyImgArr;
     private Player player;
     private ArrayList<Enemy> enemyArr;
+    private ArrayList<Bullet> bulletArr;
+    private int score;
+    private boolean gameOver;
     private Timer gameTimer;
+
+    // classes
+    // parent class for objects on screen
+    // x, y, w, h, img
+    class Aspect{
+        int x;
+        int y;
+        int w;
+        int h;
+        Image img;
+        static int abc = 10;
+
+        Aspect(int x, int y, int w, int h, Image img){
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.img = img;
+        }
+    }
+
+    // alive
+    class Enemy extends Aspect{
+        boolean alive;
+
+        Enemy(int x, int y, int w, int h, Image img){
+            super(x, y, w, h, img);
+            alive = true;
+        }
+    }
+
+    class Player extends Aspect{
+        Player(int x, int y, int w, int h, Image img){
+            super(x, y, w, h, img);
+        }
+    }
+
+    // used
+    // static: w, h
+    class Bullet extends Aspect{
+        boolean used;
+
+        Bullet(int x, int y){
+            super(x, y, MyGame.px / 8, MyGame.px / 2, null);
+            used = false;
+        }
+    }
 
     // constructor
     public MyGame(){
@@ -48,24 +100,93 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-cyan.png")).getImage());
         enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-magenta.png")).getImage());
         enemyImgArr.add(new ImageIcon(getClass().getResource("./rsc/alien-yellow.png")).getImage());
-        
+
         // create Player object
         player = new Player(((px * cols) / 2 - px), (height - (px * 2)), (px * 2), px, playerImg);
         
         // create Enemy objects
         enemyArr = new ArrayList<Enemy>();
-        for(Image enemyImg : enemyImgArr){
-            enemyArr.add(new Enemy(px, px, (px * 2), px, enemyImg));
-        }
+        // enemyImgArr.get((int) (Math.random() * enemyImgArr.size() + 1))
+
+        // reset game
+        score = 0;
+        gameOver = false;
 
         // start game timer
         gameTimer = new Timer(1000/60, this);
         gameTimer.start();
     }
 
+    // loop
     @Override
     public void actionPerformed(ActionEvent e){
-        // loop
+        move();
+
+        repaint();
+
+        if(gameOver){
+            gameTimer.stop();
+        }
+    }
+
+    @Override
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        draw(g);
+    }
+
+    public void draw(Graphics g){
+        g.drawImage(player.img, player.x, player.y, player.w, player.h, null);
+
+        for(Enemy enemy : enemyArr){
+            if(enemy.alive){
+                g.drawImage(enemy.img, enemy.x, enemy.y, enemy.w, enemy.h, null);
+            }
+        }
+
+        g.setColor(Color.white);
+        for(Bullet bullet : bulletArr){
+            if(!bullet.used){
+                g.fillRect(bullet.x, bullet.y, bullet.w, bullet.h);
+            }
+        }
+
+        g.setColor(Color.green);
+        g.setFont(new Font("Arial", Font.PLAIN, 32));
+        if(gameOver){
+            g.drawString("Game Over! Score: " + score, 10, 35);
+        }else{
+            g.drawString("" + score, 10, 35);
+        }
+    }
+
+    public void createEnemy(){
+        
+    }
+
+    public void move(){
+        
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e){
+        if(gameOver){
+            score = 0;
+            gameOver = false;
+            gameTimer.start();
+        }
+
+        if(e.getKeyCode() == KeyEvent.VK_LEFT){
+            if(player.x > px){
+                
+            }
+        }else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+            if(player.x < (width + px)){
+                player.x += px;
+            }
+        }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            bulletArr.add(new Bullet(player.x, player.y));
+        }
     }
 
     @Override
@@ -73,77 +194,4 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     
     @Override
     public void keyPressed(KeyEvent e){}
-
-    @Override
-    public void keyReleased(KeyEvent e){
-        if(e.getKeyCode() == KeyEvent.VK_LEFT){
-            // left arrow
-        }else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            // right arrow
-        }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            // space
-        }
-    }
-}
-
-// parent class for objects on screen
-// x, y, w, h, img
-class Aspect{
-    private int x;
-    private int y;
-    private int w;
-    private int h;
-    private Image img;
-
-    public Aspect(int x, int y, int w, int h, Image img){
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.img = img;
-    }
-
-    public int getX(){ return this.x; }
-    public void setX(int x){ this.x = x; }
-    public int getY(){ return this.y; }
-    public void setY(int y){ this.y = y; }
-    public int getW(){ return this.w; }
-    public void setW(int w){ this.w = w; }
-    public int getH(){ return this.h; }
-    public void setH(int h){ this.h = h; }
-    public Image getImg(){ return this.img; }
-    public void setImg(Image img){ this.img = img; }
-}
-
-// alive
-class Enemy extends Aspect{
-    private boolean alive;
-
-    public Enemy(int x, int y, int w, int h, Image img){
-        super(x, y, w, h, img);
-        alive = true;
-    }
-
-    public boolean getAlive(){ return this.alive; }
-    public void setAlive(boolean alive){ this.alive = alive; }
-
-}
-
-class Player extends Aspect{
-    public Player(int x, int y, int w, int h, Image img){
-        super(x, y, w, h, img);
-    }
-}
-
-// used
-class Bullet extends Aspect{
-    private boolean used;
-
-    public Bullet(int x, int y, int w, int h, Image img){
-        super(x, y, w, h, img);
-        used = false;
-    }
-
-    public boolean getUsed(){ return this.used; }
-    public void setUsed(boolean used){ this.used = used; }
 }

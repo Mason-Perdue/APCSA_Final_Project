@@ -8,7 +8,7 @@ public class App{
       
         // window vars
         int tileSize = 32;
-        int columns = 16;
+        // int columns = 16;
         int rows = 16;
         // 512 px
         int boardWidth = 512;
