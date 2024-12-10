@@ -7,8 +7,6 @@ import javax.swing.*;
 // makes window and instance of MyGame
 public class Window{
     public static void main(String[] args) {
-        System.out.println(Aspect.abc);
-
         JFrame frame = new JFrame("Game");
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
@@ -62,8 +60,8 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     class Enemy extends Aspect{
         boolean alive;
 
-        Enemy(int x, int y, int w, int h, Image img){
-            super(x, y, w, h, img);
+        Enemy(int w, int h, Image img){
+            super(((int) (Math.random() * cols) * px), px, w, h, img);
             alive = true;
         }
     }
@@ -104,9 +102,16 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         // create Player object
         player = new Player(((px * cols) / 2 - px), (height - (px * 2)), (px * 2), px, playerImg);
         
-        // create Enemy objects
+        // create Enemy object array
         enemyArr = new ArrayList<Enemy>();
-        // enemyImgArr.get((int) (Math.random() * enemyImgArr.size() + 1))
+        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+
+        // create Bullet object array
+        bulletArr = new ArrayList<Bullet>();
 
         // reset game
         score = 0;
@@ -138,10 +143,13 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     public void draw(Graphics g){
         g.drawImage(player.img, player.x, player.y, player.w, player.h, null);
 
-        for(Enemy enemy : enemyArr){
-            if(enemy.alive){
-                g.drawImage(enemy.img, enemy.x, enemy.y, enemy.w, enemy.h, null);
+        for(int i = 0; i < enemyArr.size(); i++){
+            if(!enemyArr.get(i).alive){
+                
+            }else{
+
             }
+            g.drawImage(enemyArr.get(i).img, enemyArr.get(i).x, enemyArr.get(i).y, enemyArr.get(i).w, enemyArr.get(i).h, null);
         }
 
         g.setColor(Color.white);
@@ -160,12 +168,26 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         }
     }
 
-    public void createEnemy(){
-        
-    }
-
     public void move(){
-        
+        for(Enemy enemy : enemyArr){
+            if(enemy.y >= (height - px)){
+                enemy.alive = false;
+            }
+
+            if(enemy.x >= player.x && enemy.x <= player.x + player.w && enemy.y <= player.y){
+                gameOver = true;
+            }
+
+            if(enemy.alive){
+                enemy.y += 1;
+            }
+        }
+
+        for(Bullet bullet : bulletArr){
+            if(!bullet.used){
+                bullet.y -= 1;
+            }
+        }
     }
 
     @Override
@@ -178,10 +200,10 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         if(e.getKeyCode() == KeyEvent.VK_LEFT){
             if(player.x > px){
-                
+                player.x -= px;
             }
         }else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            if(player.x < (width + px)){
+            if(player.x < (width - px * 3)){
                 player.x += px;
             }
         }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
