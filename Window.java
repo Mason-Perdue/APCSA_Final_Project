@@ -59,10 +59,12 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     // alive
     class Enemy extends Aspect{
         boolean alive;
+        int health;
 
         Enemy(int w, int h, Image img){
             super((((int) (Math.random() * (cols - 1))) * px), px, w, h, img);
             alive = true;
+            health = 4;
         }
     }
 
@@ -142,10 +144,23 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         g.drawImage(player.img, player.x, player.y, player.w, player.h, null);
 
         for(int i = 0; i < enemyArr.size(); i++){
+            Image img = null;
+
             if(!enemyArr.get(i).alive){
                 enemyArr.set(i, new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
             }
-            g.drawImage(enemyArr.get(i).img, enemyArr.get(i).x, enemyArr.get(i).y, enemyArr.get(i).w, enemyArr.get(i).h, null);
+            
+            if(enemyArr.get(i).health == 4){
+                img = enemyImgArr.get(0);
+            }else if(enemyArr.get(i).health == 3){
+                img = enemyImgArr.get(1);
+            }else if(enemyArr.get(i).health == 2){
+                img = enemyImgArr.get(2);
+            }else if(enemyArr.get(i).health == 1){
+                img = enemyImgArr.get(3);
+            }
+
+            g.drawImage(img, enemyArr.get(i).x, enemyArr.get(i).y, enemyArr.get(i).w, enemyArr.get(i).h, null);
         }
 
         g.setColor(Color.white);
