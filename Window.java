@@ -61,7 +61,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         boolean alive;
 
         Enemy(int w, int h, Image img){
-            super(((int) (Math.random() * cols) * px), px, w, h, img);
+            super((((int) (Math.random() * (cols - 1))) * px), px, w, h, img);
             alive = true;
         }
     }
@@ -104,11 +104,9 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         
         // create Enemy object array
         enemyArr = new ArrayList<Enemy>();
-        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
-        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
-        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
-        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
-        enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        for(int i = 0; i < 10; i++){
+            enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+        }
 
         // create Bullet object array
         bulletArr = new ArrayList<Bullet>();
@@ -145,17 +143,18 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         for(int i = 0; i < enemyArr.size(); i++){
             if(!enemyArr.get(i).alive){
-                
-            }else{
-
+                enemyArr.set(i, new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
             }
             g.drawImage(enemyArr.get(i).img, enemyArr.get(i).x, enemyArr.get(i).y, enemyArr.get(i).w, enemyArr.get(i).h, null);
         }
 
         g.setColor(Color.white);
-        for(Bullet bullet : bulletArr){
-            if(!bullet.used){
-                g.fillRect(bullet.x, bullet.y, bullet.w, bullet.h);
+        for(int i = 0; i < bulletArr.size(); i++){
+            if(!bulletArr.get(i).used){
+                g.fillRect(bulletArr.get(i).x, bulletArr.get(i).y, bulletArr.get(i).w, bulletArr.get(i).h);
+            }else{
+                bulletArr.remove(i);
+                i--;
             }
         }
 
@@ -174,8 +173,16 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
                 enemy.alive = false;
             }
 
-            if(enemy.x >= player.x && enemy.x <= player.x + player.w && enemy.y <= player.y){
+            if((enemy.x + enemy.w / 2 ) >= player.x && (enemy.x + enemy.w / 2 ) <= player.x + player.w && enemy.y + enemy.h >= player.y){
                 gameOver = true;
+            }
+
+            for(Bullet bullet : bulletArr){
+                if((bullet.x + bullet.w / 2 ) >= enemy.x && (bullet.x + bullet.w / 2 ) <= enemy.x + player.w && bullet.y + bullet.h <= enemy.y){
+                    bullet.used = true;
+                    enemy.alive = false;
+                    score += 1;
+                }
             }
 
             if(enemy.alive){
@@ -184,8 +191,12 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         }
 
         for(Bullet bullet : bulletArr){
+            if(bullet.y <= 0){
+                bullet.used = true;
+            }
+
             if(!bullet.used){
-                bullet.y -= 1;
+                bullet.y -= 3;
             }
         }
     }
@@ -193,6 +204,11 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     @Override
     public void keyReleased(KeyEvent e){
         if(gameOver){
+            enemyArr.clear();
+            for(int i = 0; i < 10; i++){
+                enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
+            }
+            player.x = (px * cols) / 2 - px;
             score = 0;
             gameOver = false;
             gameTimer.start();
@@ -207,7 +223,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
                 player.x += px;
             }
         }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            bulletArr.add(new Bullet(player.x, player.y));
+            bulletArr.add(new Bullet(player.x + px, player.y));
         }
     }
 
