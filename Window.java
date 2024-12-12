@@ -32,6 +32,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     private Player player;
     private ArrayList<Enemy> enemyArr;
     private ArrayList<Bullet> bulletArr;
+    private ArrayList<Integer> scoreArr;
     private int score;
     private boolean gameOver;
     private Timer gameTimer;
@@ -56,15 +57,17 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         }
     }
 
-    // alive
+    // alive, health, xDir
     class Enemy extends Aspect{
         boolean alive;
         int health;
+        int xDir;
 
         Enemy(int w, int h, Image img){
             super((((int) (Math.random() * (cols - 1))) * px), px, w, h, img);
             alive = true;
             health = 4;
+            xDir = 1;
         }
     }
 
@@ -176,7 +179,11 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         g.setColor(Color.green);
         g.setFont(new Font("Arial", Font.PLAIN, 32));
         if(gameOver){
-            g.drawString("Game Over! Score: " + score, 10, 35);
+            String scores = "";
+            for(Integer i : scoreArr){
+                scores += i + ", ";
+            }
+            g.drawString("Game Over! Score: " + scores, 10, 35);
         }else{
             g.drawString("" + score, 10, 35);
         }
@@ -193,15 +200,28 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
             }
 
             for(Bullet bullet : bulletArr){
-                if((bullet.x + bullet.w / 2 ) >= enemy.x && (bullet.x + bullet.w / 2 ) <= enemy.x + player.w && bullet.y + bullet.h <= enemy.y){
+                if(bullet.x + bullet.w >= enemy.x && bullet.x <= enemy.x + enemy.w && bullet.y <= enemy.y + enemy.h && bullet.y >= enemy.y){
                     bullet.used = true;
-                    enemy.alive = false;
+                    enemy.health--;
                     score += 1;
+
+                    if(enemy.health == 0){
+                        enemy.alive = false;
+                    }
+                }
+            }
+
+            if(enemy.x <= 0 || enemy.x + enemy.w >= width){
+                enemy.xDir *= -1;
+            }else{
+                if(Math.random() > 0.98){
+                    enemy.xDir *= -1;
                 }
             }
 
             if(enemy.alive){
                 enemy.y += 1;
+                enemy.x += enemy.xDir;
             }
         }
 
@@ -224,6 +244,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
                 enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
             }
             player.x = (px * cols) / 2 - px;
+            scoreArr.add(score);
             score = 0;
             gameOver = false;
             gameTimer.start();
