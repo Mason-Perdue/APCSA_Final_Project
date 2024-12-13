@@ -32,6 +32,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     private Player player;
     private ArrayList<Enemy> enemyArr;
     private ArrayList<Bullet> bulletArr;
+    private ArrayList<Asteroid> asteroidArr;
     private ArrayList<Integer> scoreArr;
     private int score;
     private boolean gameOver;
@@ -88,6 +89,12 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         }
     }
 
+    class Asteroid extends Aspect{
+        public Asteroid(){
+            super((((int) (Math.random() * (cols - 1))) * px), px,  ((int) (Math.random() * 20) + 1), ((int) (Math.random() * 20) + 1), null);
+        }
+    }
+
     // constructor
     public MyGame(){
         // window setup
@@ -115,6 +122,12 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         // create Bullet object array
         bulletArr = new ArrayList<Bullet>();
+
+        // create Asteroid object array
+        asteroidArr = new ArrayList<Asteroid>();
+        for(int i = 0; i < 5; i++){
+            asteroidArr.add(new Asteroid());
+        }
 
         // reset game
         score = 0;
@@ -184,13 +197,18 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
             for(Integer i : scoreArr){
                 scores += i + ", ";
             }
-            g.setFont(new Font("DialogInput", Font.PLAIN, 32));
+            g.setFont(new Font("Cascadia Code", Font.PLAIN, 32));
             g.drawString("Game Over!", 10, 35);
-            g.setFont(new Font("DialogInput", Font.PLAIN, 20));
+            g.setFont(new Font("Cascadia Code", Font.PLAIN, 20));
             g.drawString("Scores: " + scores.substring(0, scores.length() - 2), 10, 75);
         }else{
-            g.setFont(new Font("DialogInput", Font.PLAIN, 32));
+            g.setFont(new Font("Cascadia Code", Font.PLAIN, 32));
             g.drawString("" + score, 10, 35);
+        }
+
+        g.setColor(Color.gray);
+        for(int i = 0; i < asteroidArr.size(); i++){
+            g.fillRect(bulletArr.get(i).x, bulletArr.get(i).y, bulletArr.get(i).w, bulletArr.get(i).h);
         }
     }
 
