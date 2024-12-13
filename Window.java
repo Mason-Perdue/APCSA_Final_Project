@@ -118,6 +118,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         // reset game
         score = 0;
+        scoreArr = new ArrayList<Integer>();
         gameOver = false;
 
         // start game timer
@@ -134,6 +135,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         if(gameOver){
             gameTimer.stop();
+            scoreArr.add(score);
         }
     }
 
@@ -177,14 +179,17 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
         }
 
         g.setColor(Color.green);
-        g.setFont(new Font("Arial", Font.PLAIN, 32));
         if(gameOver){
             String scores = "";
             for(Integer i : scoreArr){
                 scores += i + ", ";
             }
-            g.drawString("Game Over! Score: " + scores, 10, 35);
+            g.setFont(new Font("DialogInput", Font.PLAIN, 32));
+            g.drawString("Game Over!", 10, 35);
+            g.setFont(new Font("DialogInput", Font.PLAIN, 20));
+            g.drawString("Scores: " + scores.substring(0, scores.length() - 2), 10, 75);
         }else{
+            g.setFont(new Font("DialogInput", Font.PLAIN, 32));
             g.drawString("" + score, 10, 35);
         }
     }
@@ -244,7 +249,6 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
                 enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
             }
             player.x = (px * cols) / 2 - px;
-            scoreArr.add(score);
             score = 0;
             gameOver = false;
             gameTimer.start();
@@ -260,6 +264,8 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
             }
         }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
             bulletArr.add(new Bullet(player.x + px, player.y));
+        }else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+            gameOver = true;
         }
     }
 
