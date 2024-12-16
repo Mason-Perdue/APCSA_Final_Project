@@ -234,7 +234,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
                 enemyArr.set(i, new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
             }
             
-            
+            // else if conditionals use boolean comparison operator for equals to change the image of each enemy depending on their health
             if(enemyArr.get(i).health == 4){
                 img = enemyImgArr.get(0);
             }else if(enemyArr.get(i).health == 3){
@@ -248,11 +248,15 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
             g.drawImage(img, enemyArr.get(i).x, enemyArr.get(i).y, enemyArr.get(i).w, enemyArr.get(i).h, null);
         }
 
+        // changes pen color to white
         g.setColor(Color.white);
+        // loops through bullet arraylist
         for(int i = 0; i < bulletArr.size(); i++){
             if(!bulletArr.get(i).used){
+                // draws a filled in rectangle based on Bullet object's instance variables
                 g.fillRect(bulletArr.get(i).x, bulletArr.get(i).y, bulletArr.get(i).w, bulletArr.get(i).h);
             }else{
+                // removes bullet from arraylist and decrements i if bullet has been used
                 bulletArr.remove(i);
                 i--;
             }
@@ -260,100 +264,132 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
 
         g.setColor(Color.gray);
         for(int i = 0; i < asteroidArr.size(); i++){
+            // draws filled in oval
             g.fillOval(asteroidArr.get(i).x, asteroidArr.get(i).y, asteroidArr.get(i).w, asteroidArr.get(i).h);
         }
 
         g.setColor(Color.green);
+        // checks if game has ended
         if(gameOver){
+            // declares and initializes empty string 
             String scores = "";
+            // adds each score from Integer ArrayList to String score
             for(Integer i : scoreArr){
                 scores += i + ", ";
             }
+            // changes font of pen
             g.setFont(new Font("Cascadia Code", Font.PLAIN, 32));
+            // draws text on screen
             g.drawString("Game Over!", 10, 35);
             g.setFont(new Font("Cascadia Code", Font.PLAIN, 20));
             g.drawString("Scores: " + scores.substring(0, scores.length() - 2), 10, 75);
             g.drawString("Press ENTER to Restart", 10, 100);
         }else{
+            // draws score on screen
             g.setFont(new Font("Cascadia Code", Font.PLAIN, 32));
             g.drawString("" + score, 10, 35);
         }
     }
 
+    // moves objects on screen
     public void move(){
+        // loops through enemy arraylist
         for(Enemy enemy : enemyArr){
+            // changes boolean alive instance variable to false if enemy is past bottom of screen
             if(enemy.y >= (height - px)){
                 enemy.alive = false;
             }
-
+            
+            // checks for collision between enemy and player
             if((enemy.x + enemy.w / 2 ) >= player.x && (enemy.x + enemy.w / 2 ) <= player.x + player.w && enemy.y + enemy.h >= player.y){
                 gameOver = true;
             }
 
+            // loops through bullet arraylist to check for collisions and then decrease the enemy health if it is hit
             for(Bullet bullet : bulletArr){
                 if(bullet.x + bullet.w >= enemy.x && bullet.x <= enemy.x + enemy.w && bullet.y <= enemy.y + enemy.h && bullet.y >= enemy.y){
                     bullet.used = true;
                     enemy.health--;
                     score += 1;
 
+                    // changes primative boolean to false if enemy health is zero (hit four times)
                     if(enemy.health == 0){
                         enemy.alive = false;
                     }
                 }
             }
 
+            // changes direction of x movement of enemies if they hit the edges of screen
+            // uses boolean logic operator || for or between two boolean statements
             if(enemy.x <= 0 || enemy.x + enemy.w >= width){
                 enemy.xDir *= -1;
             }else{
+                // changes direction of enemy roughly 2% of the time
                 if(Math.random() > 0.98){
                     enemy.xDir *= -1;
                 }
             }
 
+            // moves enemy on screen if still alive
             if(enemy.alive){
                 enemy.y += 1;
                 enemy.x += enemy.xDir;
             }
         }
 
+        // loops through bullet objects
         for(Bullet bullet : bulletArr){
+            // sets used to true if above top of screen
             if(bullet.y <= 0){
                 bullet.used = true;
             }
 
+            // if not used then move up screen
             if(!bullet.used){
                 bullet.y -= 3;
             }
         }
 
+        // loops through asteroid objects
         for(int i = 0; i < asteroidArr.size(); i++){
+            // sets gameOver to false if collision between player and asteroid
             if((asteroidArr.get(i).x + asteroidArr.get(i).w / 2 ) >= player.x && (asteroidArr.get(i).x + asteroidArr.get(i).w / 2 ) <= player.x + player.w && asteroidArr.get(i).y + asteroidArr.get(i).h >= player.y){
                 gameOver = true;
             }
 
+            // removes and then adds in new asteroid if an asteroid is past the bottom of the screen
+            // no check for right side of screen creates randomness by delaying when asteroids come back
             if(asteroidArr.get(i).y >= (height - px)){
                 asteroidArr.remove(i);
                 asteroidArr.add(i, new Asteroid((int) (Math.random() * 10) + 10));
             }
 
+            // updates positon of asteroids to move from left side to bottom right corner at 45 deg angle
             asteroidArr.get(i).x += 1;
             asteroidArr.get(i).y += 1;
         }
     }
 
+    // checks if a key has been pressed and then released
     @Override
     public void keyReleased(KeyEvent e){
         if(gameOver){
+            // enter key
             if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                // clears objects on screen
                 enemyArr.clear();
                 bulletArr.clear();
                 asteroidArr.clear();
+
+                // creates new enemy and asteroid objects
                 for(int i = 0; i < 10; i++){
                     enemyArr.add(new Enemy(2 * px, px, enemyImgArr.get((int) (Math.random() * enemyImgArr.size()))));
                 }
                 for(int i = 0; i < 5; i++){
                     asteroidArr.add(new Asteroid((int) (Math.random() * 10) + 10));
                 }
+
+                // resets game variables (player position, socre, gameOver, gameTimer)
                 player.x = (px * cols) / 2 - px;
                 score = 0;
                 gameOver = false;
@@ -361,24 +397,28 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
             }   
         }
 
+        // left arrow moves player left on px
         if(e.getKeyCode() == KeyEvent.VK_LEFT){
             if(player.x > px){
                 player.x -= px;
             }
+        // right arrow moves player right on px
         }else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
             if(player.x < (width - px * 3)){
                 player.x += px;
             }
+        // space creates new bullet object at player's position
         }else if(e.getKeyCode() == KeyEvent.VK_SPACE){
             bulletArr.add(new Bullet(player.x + px, player.y));
+        // escape ends game
         }else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
             gameOver = true;
         }
     }
 
+    // overrides parent classes methods
     @Override
     public void keyTyped(KeyEvent e){}
-    
     @Override
     public void keyPressed(KeyEvent e){}
 }
