@@ -23,6 +23,7 @@ public class Window{
         frame.setResizable(false);
         // allows x on window border to quit program
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         // creates instance of game
         MyGame game = new MyGame();
         // adds game frame to window
@@ -197,7 +198,7 @@ class MyGame extends JPanel implements ActionListener, KeyListener{
     // overrides method from parent class
     @Override
     public void actionPerformed(ActionEvent e){
-        // calls move() and repaint() functions
+        // calls move() and repaint() functions to move each object and then redisplay them
         move();
         repaint();
 
