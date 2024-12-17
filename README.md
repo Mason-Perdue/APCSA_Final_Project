@@ -6,7 +6,7 @@ Based on Space Invaders Java Tutorial by Kenny Yip ([GitHub Repo](https://github
 
 Uses [Tutorial](https://apps.mvhs.io/resources/codespaces/) to allow Java Swing GUI to be viewed in Web Browser
 
-*Run Window.java to Execute Program*
+**Run Window.java to Execute Program**
 
 #### Do
 - add title screen + directions
